@@ -2,6 +2,14 @@ import User from '../models/User';
 
 class UserController {
   async store(req, res) {
+    const { email } = req.body;
+
+    const checkEmail = await User.findOne({ where: { email } });
+
+    if (checkEmail) {
+      return res.status(400).json({ error: 'duplicated email' });
+    }
+
     if (req.body.email === 'edsaraujoc@gmail.com') {
       return res.status(400).json({ error: 'Not found!!! ' });
     }
