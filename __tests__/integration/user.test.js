@@ -1,8 +1,7 @@
 import request from 'supertest';
 import bcrypt from 'bcryptjs';
 import app from '../../src/app';
-import User from '../../src/app/models/User';
-
+import factory from '../factories';
 import truncate from '../util/truncate';
 
 describe('User', () => {
@@ -11,20 +10,16 @@ describe('User', () => {
   });
 
   it('should be able to register', async () => {
+    const user = await factory.attrs('User');
+
     const response = await request(app)
       .post('/users')
-      .send({
-        name: 'Edson',
-        email: 'edsaraujocorral12@gmail.com',
-        password_hash: '1231123',
-      });
+      .send(user);
     expect(response.body).toHaveProperty('id');
   });
 
   it('should encrypt user password when new user created', async () => {
-    const user = await User.create({
-      name: 'Edson',
-      email: 'edsaraujocorral12@gmail.com',
+    const user = await factory.create('User', {
       password: '1231123',
     });
 
